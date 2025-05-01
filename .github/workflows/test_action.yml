@@ -13,6 +13,6 @@ jobs:
       uses: actions/checkout@v4.2.2
     - name: install uv
       uses: ./.github/actions/install_uv
-    - name: Run file
+    - name: Run Main
       run: |
         uv run main.py
