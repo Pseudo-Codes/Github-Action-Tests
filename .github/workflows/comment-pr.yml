@@ -3,7 +3,6 @@ name: Comment based on commit count
 on:
   pull_request:
     types: [opened, synchronize]
-
 jobs:
   comment:
     runs-on: ubuntu-latest
