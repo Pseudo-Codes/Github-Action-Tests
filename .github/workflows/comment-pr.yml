@@ -1,25 +1,46 @@
-name: Comment on PR
+name: Comment based on commit count
 
 on:
   pull_request:
-    types: [opened, edited, synchronize]
+    types: [opened, synchronize]
 
 jobs:
   comment:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Comment on the pull request
+      - name: Get commit count
+        id: get_commits
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.payload.pull_request.number;
-            const commentBody = "👋 Thanks for your PR! A maintainer will review it shortly.";
+
+            const commits = await github.rest.pulls.listCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+
+            const count = commits.data.length;
+            core.setOutput("commit_count", count);
+
+      - name: Comment based on commit count
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const count = parseInt("${{ steps.get_commits.outputs.commit_count }}");
+            
+            const isEven = count % 2 === 0;
+            const comment = isEven
+              ? `✅ This PR has an even number of commits: ${count}`
+              : `⚠️ This PR has an odd number of commits: ${count}`;
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
-              body: commentBody,
+              body: comment,
             });
