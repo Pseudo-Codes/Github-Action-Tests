@@ -7,12 +7,14 @@ jobs:
   comment:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+      - name: install uv
+        uses: ./.github/actions/install_uv      
       - name: Get lines changed
         id: get_lines_changed
         run: |
           uv run get_lines_of_code.py
-        
-
       - name: Comment based on commit count
         uses: actions/github-script@v7
         with:
