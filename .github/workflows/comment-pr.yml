@@ -21,7 +21,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.payload.pull_request.number;
-            const linesChanged = parseInt("${{ steps.get_commits.outputs.lines_changed }}");
+            const linesChanged = parseInt("${{ steps.get_lines_changed.outputs.lines_changed }}");
             
             const comment = linesChanged <= 500
               ? `✅ This PR has src code changes: ${linesChanged}`

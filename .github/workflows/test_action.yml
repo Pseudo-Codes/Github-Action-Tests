@@ -15,4 +15,4 @@ jobs:
       uses: ./.github/actions/install_uv
     - name: Run Main
       run: |
-        uv run get_lines_of_code.py
+        uv run main.py
