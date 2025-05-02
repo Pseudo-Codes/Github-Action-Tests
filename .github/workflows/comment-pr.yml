@@ -14,7 +14,7 @@ jobs:
       - name: Get lines changed
         id: get_lines_changed
         run: |
-          uv run get_lines_of_code.py
+          uv run get_lines_added.py
       - name: Comment based on commit count
         uses: actions/github-script@v7
         with:
