@@ -48,8 +48,12 @@ def write_lines_changed_to_file(lines_changed: int, output_file: str) -> None:
     with open(output_file, "a") as f:
         f.write(f'lines_changed={str(lines_changed).lower()}\n')
 
-
-if __name__ == "__main__":
+def main() -> None:
     repo_path = "."
     lines_changed = get_src_lines_changed(repo_path)
-    write_lines_changed_to_file(lines_changed, os.environ.get("GITHUB_OUTPUT"))
+    output_file = os.environ.get("GITHUB_OUTPUT")
+    
+    write_lines_changed_to_file(lines_changed, output_file)
+
+if __name__ == "__main__":
+    main()
