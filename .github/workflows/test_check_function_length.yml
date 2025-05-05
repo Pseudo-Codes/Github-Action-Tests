@@ -1,0 +1,16 @@
+name: Test Action
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.2.2
+    - name: install uv
+      uses: ./.github/actions/install_uv
+    - name: Run Check Function
+      run: |
+        uv run check_function_length.py
