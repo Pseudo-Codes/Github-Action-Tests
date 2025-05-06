@@ -1,0 +1,37 @@
+name: Comment based on commit count
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0        
+      - name: install uv
+        uses: ./.github/actions/install_uv      
+      - name: Get lines changed
+        id: get_lines_changed
+        run: |
+          uv run get_lines_added.py
+      - name: Comment based on commit count
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const linesChanged = parseInt("${{ steps.get_lines_changed.outputs.lines_changed }}");
+            
+            const comment = linesChanged <= 500
+              ? `✅ This PR has src code changes: ${linesChanged}`
+              : `⚠️ This PR has too many changes consider splitting it: ${linesChanged}`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: comment,
+            });
